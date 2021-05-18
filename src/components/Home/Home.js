@@ -2,12 +2,14 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-
+import Loader from "react-loader-spinner";
+import Image from '../../images/logo.png';
 
 export default function Home (){
     const [email,setEmail] = useState ("");
     const [password, setPassword] = useState ("");
     const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
     let history = useHistory();
@@ -18,17 +20,27 @@ export default function Home (){
     
     return (
         <>
-        <Title>TrackIt</Title>
+        <DivLogo>
+           <Logo src={Image}/> 
+        </DivLogo>
+        
         <Data>
-            <Input type="text" placeholder="email" onChange={e => setEmail(e.target.value)}></Input>
-            <Input type="password" placeholder="senha" onChange={e => setPassword(e.target.value)}></Input>
-            <Button onClick={() => {
+            <Input disabled = {loading} type="text" placeholder="email" onChange={e => setEmail(e.target.value)}></Input>
+            <Input disabled = {loading} type="password" placeholder="senha" onChange={e => setPassword(e.target.value)}></Input>
+            <Button disabled = {loading} onClick={() => {
                 const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
+                setLoading(true);
                 request.then(response => {
                     setToken(response.data.token);
                     history.push("/hoje")});
-                request.catch(error => alert("Erro! Email e/ou senha incorreto(s)"))
-                }}>Entrar</Button>
+                request.catch(error => {
+                    alert("Erro! Email e/ou senha incorreto(s)");
+                    setLoading(false);
+                })
+                }}>
+                    {loading === true? "": "Entrar"}
+                    <Loader visible ={loading} type="ThreeDots" color="#FFF" height={80} width={80} />
+            </Button>
         </Data>
         <Link to="/cadastro">
             <Register>Não tem uma conta? Cadastre-se!</Register>
@@ -37,13 +49,16 @@ export default function Home (){
     )
 }
 
-const Title = styled.h1`
-    font-family: 'Playball', cursive;
-    font-size: 68.98px;
-    text-align: center;
-    color: #126BA5;
+const DivLogo = styled.div`
+    display: flex;
+    justify-content: center;
     margin-bottom: 10px;
     margin-top: 68px;
+`
+
+const Logo = styled.img`
+    width: 180px;
+    height: 180px;
 `;
 
 const Input = styled.input`
