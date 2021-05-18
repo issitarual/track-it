@@ -5,6 +5,7 @@ import Habits from './Habits/Habits';
 import Today from './Today/Today';
 import Historic from './Historic/Historic';
 import '../css/reset.css'
+import '../css/style.css'
 
 export default function App(){
     return (
