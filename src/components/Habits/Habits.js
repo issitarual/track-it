@@ -1,13 +1,46 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Header from '../Header'
 import Footer from '../Footer';
-
+import axios from 'axios';
+import UserContext from '../../contexts/UserContexts';
+import { TrashOutline } from 'react-ionicons';
+import Loader from "react-loader-spinner";
 
 export default function Habits (){
-    const day = ["D", "S", "T", "Q", "Q", "S", "S"]
+    const { user }= useContext(UserContext);
+    const [day, setDay ]= useState([
+        {weekday: "D", isClicked: false, id: 0}, 
+        {weekday: "S", isClicked: false, id: 1},
+        {weekday: "T", isClicked: false, id: 2}, 
+        {weekday: "Q", isClicked: false, id: 3},
+        {weekday: "Q", isClicked: false, id: 4},
+        {weekday: "S", isClicked: false, id: 5},
+        {weekday: "S", isClicked: false, id: 6}
+    ])
     const [habitName,setHabitName] = useState ("");
     const [addHabits, setAddHabits] = useState(false);
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    console.log(items);
+
+	useEffect(() => {
+        const config = {
+	        headers: {
+		        "Authorization": `Bearer ${user.token}`
+	        }
+        }
+		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+
+		request.then(resposta => {
+			setItems(resposta.data);
+		});
+
+        request.catch(error => alert("Erro! Tente novamente :/"))
+	}, []);
+
+    console.log(day);
 
     return(
         <>
@@ -21,19 +54,102 @@ export default function Habits (){
                 </AddHabits>
             </HabitsDiv>
             <NewHabit display = {addHabits}>
-                <HabitName type="text" placeholder="nome do hábito" onChange={e => setHabitName(e.target.value)}></HabitName>
+                <HabitName disabled = {loading} type="text" placeholder="nome do hábito" value = {habitName} onChange={e => setHabitName(e.target.value)}></HabitName>
                 <Weekday>
-                    {day.map((d,i) => <Day key = {i}>{d}</Day>)}
+                    {day.map((d,i) => <Day disabled = {loading} state = {d.isClicked} onClick={() => clickDay(d)} key = {i}>{d.weekday}</Day>)}
                 </Weekday>
                 <Buttons>
-                    <Cancel onClick={() => setAddHabits(false)}>Cancelar</Cancel>
-                    <Save>Salvar</Save>
+                    <Cancel disabled = {loading} onClick={() => setAddHabits(false)}>Cancelar</Cancel>
+                    <Save disabled = {loading} onClick={() => {
+                        setLoading(true);
+                        const config = {
+                            headers: {
+                                "Authorization": `Bearer ${user.token}`
+                            }
+                        }
+                        const body = {
+                            name: habitName,
+                            days: day.filter((d,i) => d.isClicked === true).map((d,i) => d.id)
+                        }
+                        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
+                
+                        request.then(resposta => {
+                            setHabitName("");
+                            setItems([...items, resposta.data]);
+                            setLoading(false);
+                            setAddHabits(false);
+                            setDay ([
+                                {weekday: "D", isClicked: false, id: 0}, 
+                                {weekday: "S", isClicked: false, id: 1},
+                                {weekday: "T", isClicked: false, id: 2}, 
+                                {weekday: "Q", isClicked: false, id: 3},
+                                {weekday: "Q", isClicked: false, id: 4},
+                                {weekday: "S", isClicked: false, id: 5},
+                                {weekday: "S", isClicked: false, id: 6}
+                            ]);
+                            
+                    })
+            
+                    request.catch(error => {
+                        alert("Erro! Tente novamente :/");
+                        setLoading (false);
+                    })
+                    }}>{loading === true? "": "Salvar"}
+                        <Loader visible ={loading} type="ThreeDots" color="#FFF" height={10} width={40} />
+                    </Save>
                 </Buttons>
             </NewHabit>
-            <Text>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</Text>
+            <Text>{items.length === 0? "Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!": ""}</Text>
+            
+                {items.map((h,i)=>
+                    <OldHabits display = {items.length === 0? false: true}>
+                        <span>
+                            <p>{h.name}</p>
+                            <TrashOutline onClick={() => {
+                            let resultado = window.confirm("Você gostaria de apagar esse hábito?");
+                            if(resultado){
+                                axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${h.id}`, {
+                                    headers: {
+                                        "Authorization": `Bearer ${user.token}`
+                                    },
+                                  });
+                                  
+                                    const config = {
+                                        headers: {
+                                            "Authorization": `Bearer ${user.token}`
+                                        }
+                                    }
+                                    const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+                            
+                                    request.then(resposta => {
+                                        setItems(resposta.data);
+                                    });
+                            
+                                    request.catch(error => alert("Erro! Tente novamente :/"))
+                                ;
+                                }
+                            else{
+                                alert("cancelar")
+                            }
+                            }
+                            }
+                            />
+                        </span>
+                        <Weekday>
+                            {day.map((d,i) => d.weekday.id === h.days[0]? <Day state= {true} key = {i}>{d.weekday}</Day>:  <Day state = {false} key = {i}>{d.weekday}</Day>)}
+                        </Weekday>
+                    </OldHabits>
+                )}
+                
+                <Div />
             <Footer />
         </>
     )
+
+    function clickDay (d){
+        d.isClicked = !(d.isClicked);
+        setDay([...day]);
+    }
 }
 
 const HabitsDiv = styled.div`
@@ -113,7 +229,8 @@ const Day = styled.div`
     border-radius: 5px;
     font-family: 'Lexend Deca', sans-serif;
     font-size: 20px;
-    color: #DBDBDB;
+    color: ${props => props.state? "#fff": "#DBDBDB"};
+    background-color: ${props => props.state? "#DBDBDB": "#fff"};
 `
 
 const Buttons = styled.div`
@@ -131,6 +248,8 @@ const Cancel = styled.p`
 `
 
 const Save = styled.div`
+    height: 35px;
+    width: 85px;
     padding: 8px 18px;
     margin-left: 23px;
     background-color: #52B6FF;
@@ -138,4 +257,33 @@ const Save = styled.div`
     font-family: 'Lexend Deca', sans-serif;
     font-size: 16px;
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const OldHabits = styled.div`
+    width: 90%;
+    height: 91px;
+    margin: auto;
+    padding: 13px 15px;
+    border-radius: 5px;
+    background-color: #fff;
+    display: ${props => props.display? "blocked": "none"};
+    margin-bottom: 10px;
+    p{
+        color: #666666;
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 20px;
+    }
+    span{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+`
+
+const Div = styled.div`
+    height: 110px;
 `
