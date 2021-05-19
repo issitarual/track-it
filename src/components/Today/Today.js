@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import Footer from '../Footer';
 import dayjs from 'dayjs';
 import { CheckmarkOutline } from 'react-ionicons';
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import UserContext from '../../contexts/UserContexts';
 
 
 
@@ -19,6 +22,25 @@ export default function Today (){
         {name: "Sábado", id: 6}
     ];
     const found = weekdayName.find( e => e.id === weekday);
+    const [items, setItems] = useState([]);
+    const { user }= useContext(UserContext);
+
+
+    console.log(items);
+	useEffect(() => {
+        const config = {
+	        headers: {
+		        "Authorization": `Bearer ${user.token}`
+	        }
+        }
+		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
+
+		request.then(resposta => {
+			setItems(resposta.data);
+		});
+
+        request.catch(error => alert("Erro! Tente novamente :/"))
+	}, []);
 
     return(
         <>
@@ -29,20 +51,24 @@ export default function Today (){
                 </MyHabits>
             </HabitsDiv>
             <Text value = {true}>{true? "Nenhum hábito concluído ainda": "x% dos hábitos concluídos"}</Text>
-            <Habits>
-                <Task>
-                    <h1>Tarefa!</h1>
-                    <p>Sequência atual: <span>x dias</span></p>
-                    <p>Seu recorde: <span>y dias</span></p>
-                </Task>
-                <Checkmark>
-                    <CheckmarkOutline
-                    color={'#fff'} 
-                    height="60px"
-                    width="60px"
-                    />
-                </Checkmark>
-            </Habits>
+            {items.map((t, i) => 
+                <Habits>
+                    <Task>
+                        <h1>{t.name}</h1>
+                        <p>Sequência atual: <span>{t.currentSequence} dias</span></p>
+                        <p>Seu recorde: <span>{t.highestSequence} dias</span></p>
+                    </Task>
+                    <Checkmark state = {t.done}>
+                        <CheckmarkOutline
+                        color={'#fff'} 
+                        height="60px"
+                        width="60px"
+                        />
+                    </Checkmark>
+                </Habits>
+            )}
+            <Div />
+
             < Footer />
         </>
     )
@@ -88,7 +114,7 @@ const Checkmark = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #EBEBEB;
+    background-color: ${props => props.state? "#8FC549": "#EBEBEB"};
     border: 1px solid #E7E7E7;
     border-radius: 5px;
 `
@@ -105,4 +131,8 @@ const Task = styled.div`
         font-size: 13px;
         margin-bottom: 5px;
     }
+`;
+
+const Div = styled.div`
+    height: 110px;
 `
