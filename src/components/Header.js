@@ -1,10 +1,14 @@
 import styled from 'styled-components';
+import UserContext from '../contexts/UserContexts';
+import { useContext } from 'react';
 
 export default function Header (){
+    const { user }= useContext(UserContext);
+
     return(
         <Div>
             <Title>TrackIt</Title>
-            <Image src="https://data.whicdn.com/images/346284176/original.jpg"></Image>
+            <Image src={user.image}></Image>
         </Div>
     )
 }

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import Header from '../Header'
+import Footer from '../Footer';
 
 
 export default function Habits (){
@@ -10,26 +11,27 @@ export default function Habits (){
 
     return(
         <>
-        <Header />
-        <HabitsDiv>
-            <MyHabits>
-                Meus hábitos
-            </MyHabits>
-            <AddHabits onClick={() => setAddHabits(true)}>
-                +
-            </AddHabits>
-        </HabitsDiv>
-        <NewHabit display = {addHabits}>
-            <HabitName type="text" placeholder="nome do hábito" onChange={e => setHabitName(e.target.value)}></HabitName>
-            <Weekday>
-                {day.map((d,i) => <Day key = {i}>{d}</Day>)}
-            </Weekday>
-            <Buttons>
-                <Cancel onClick={() => setAddHabits(false)}>Cancelar</Cancel>
-                <Save>Salvar</Save>
-            </Buttons>
-        </NewHabit>
-        <Text>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</Text>
+            <Header />
+            <HabitsDiv>
+                <MyHabits>
+                    Meus hábitos
+                </MyHabits>
+                <AddHabits onClick={() => setAddHabits(true)}>
+                    +
+                </AddHabits>
+            </HabitsDiv>
+            <NewHabit display = {addHabits}>
+                <HabitName type="text" placeholder="nome do hábito" onChange={e => setHabitName(e.target.value)}></HabitName>
+                <Weekday>
+                    {day.map((d,i) => <Day key = {i}>{d}</Day>)}
+                </Weekday>
+                <Buttons>
+                    <Cancel onClick={() => setAddHabits(false)}>Cancelar</Cancel>
+                    <Save>Salvar</Save>
+                </Buttons>
+            </NewHabit>
+            <Text>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</Text>
+            <Footer />
         </>
     )
 }

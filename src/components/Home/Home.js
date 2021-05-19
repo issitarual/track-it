@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Loader from "react-loader-spinner";
 import Image from '../../images/logo.png';
-import UserContext from '../../contexts/UserContexts'
+import UserContext from '../../contexts/UserContexts';
 
 export default function Home (){
     const [email,setEmail] = useState ("");

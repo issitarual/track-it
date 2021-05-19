@@ -1,5 +1,7 @@
 import Header from '../Header';
 import styled from 'styled-components';
+import Footer from '../Footer';
+
 
 export default function Historic () {
     return(
@@ -11,7 +13,7 @@ export default function Historic () {
             </MyHabits>
         </HabitsDiv>
         <Text>Em breve você poderá ver o histórico dos seus hábitos aqui!</Text>
-
+        <Footer />
         </>
     )
 }

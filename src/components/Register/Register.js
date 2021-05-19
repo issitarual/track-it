@@ -5,8 +5,6 @@ import axios from 'axios';
 import Loader from "react-loader-spinner";
 import Image from '../../images/logo.png';
 
-
-
 export default function Register(){
 
     const [email,setEmail] = useState ("");
