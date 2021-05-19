@@ -136,7 +136,7 @@ export default function Habits (){
                             />
                         </span>
                         <Weekday>
-                            {day.map((d,i) => d.weekday.id === h.days[0]? <Day state= {true} key = {i}>{d.weekday}</Day>:  <Day state = {false} key = {i}>{d.weekday}</Day>)}
+                            {day.map((d,i) => <Day state= {h.days.filter((m, i) => m == d.id)? true: false} key = {i}>{d.weekday}</Day>)}
                         </Weekday>
                     </OldHabits>
                 )}
