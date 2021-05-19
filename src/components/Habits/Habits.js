@@ -136,7 +136,7 @@ export default function Habits (){
                             />
                         </span>
                         <Weekday>
-                            {day.map((d,i) => <Day state= {h.days.filter((m, i) => m == d.id)? true: false} key = {i}>{d.weekday}</Day>)}
+                            {day.map((d,i) => sameDay(h.days, d.id)? {...d, isClicked: true}: d).map((c,i)=><Day state = {c.isClicked} key = {i}>{c.weekday}</Day>)}
                         </Weekday>
                     </OldHabits>
                 )}
@@ -149,6 +149,16 @@ export default function Habits (){
     function clickDay (d){
         d.isClicked = !(d.isClicked);
         setDay([...day]);
+    }
+
+    function sameDay(h, d){
+        for (let i = 0; i < h.length; i++){
+            if(h[i] === d){
+                return true;
+            }
+            
+        }
+        return false;
     }
 }
 
