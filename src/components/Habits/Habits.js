@@ -22,6 +22,15 @@ export default function Habits (){
     const [addHabits, setAddHabits] = useState(false);
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${user.token}`
+        }
+    }
+    const body = {
+        name: habitName,
+        days: day.filter((d,i) => d.isClicked === true).map((d,i) => d.id)
+    }
 
  
     useEffect(() =>{
@@ -30,11 +39,7 @@ export default function Habits (){
         }}, [])
 
 	useEffect(() => {
-        const config = {
-	        headers: {
-		        "Authorization": `Bearer ${user.token}`
-	        }
-        }
+ 
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
 
 		request.then(resposta => {
@@ -63,40 +68,10 @@ export default function Habits (){
                 </Weekday>
                 <Buttons>
                     <Cancel disabled = {loading} onClick={() => setAddHabits(false)}>Cancelar</Cancel>
-                    <Save disabled = {loading} onClick={() => {
-                        setLoading(true);
-                        const config = {
-                            headers: {
-                                "Authorization": `Bearer ${user.token}`
-                            }
-                        }
-                        const body = {
-                            name: habitName,
-                            days: day.filter((d,i) => d.isClicked === true).map((d,i) => d.id)
-                        }
-                        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
-                
-                        request.then(resposta => {
-                            setHabitName("");
-                            setItems([...items, resposta.data]);
-                            setLoading(false);
-                            setAddHabits(false);
-                            setDay ([
-                                {weekday: "D", isClicked: false, id: 0}, 
-                                {weekday: "S", isClicked: false, id: 1},
-                                {weekday: "T", isClicked: false, id: 2}, 
-                                {weekday: "Q", isClicked: false, id: 3},
-                                {weekday: "Q", isClicked: false, id: 4},
-                                {weekday: "S", isClicked: false, id: 5},
-                                {weekday: "S", isClicked: false, id: 6}
-                            ]);
-                            
-                    })
-            
-                    request.catch(error => {
-                        alert("Erro! Tente novamente :/");
-                        setLoading (false);
-                    })
+                    <Save disabled = {loading} onClick={() => 
+                        {!day.find((d,i) => d.isClicked)? 
+                        alert("Selecione pelo menos um dia da semana"): 
+                        sendHabit(day, setLoading, setHabitName, setItems, setAddHabits, setDay, config, body, items)
                     }}>{loading === true? "": "Salvar"}
                         <Loader visible ={loading} type="ThreeDots" color="#FFF" height={10} width={40} />
                     </Save>
@@ -116,12 +91,7 @@ export default function Habits (){
                                         "Authorization": `Bearer ${user.token}`
                                     },
                                   });
-                                  
-                                    const config = {
-                                        headers: {
-                                            "Authorization": `Bearer ${user.token}`
-                                        }
-                                    }
+
                                     const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
                             
                                     request.then(resposta => {
@@ -162,6 +132,37 @@ export default function Habits (){
             
         }
         return false;
+    }
+
+    function sendHabit (day, setLoading, setHabitName, setItems, setAddHabits, setDay, config, body, items){
+        if (!day.find((d,i) => d.isClicked)){
+            alert("Selecione pelo menos um dia da semana");
+            return;
+        }
+        else{
+            setLoading(true);
+
+            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
+    
+            request.then(resposta => {
+                setHabitName("");
+                setItems([...items, resposta.data]);
+                setLoading(false);
+                setAddHabits(false);
+                setDay ([
+                    {weekday: "D", isClicked: false, id: 0}, 
+                    {weekday: "S", isClicked: false, id: 1},
+                    {weekday: "T", isClicked: false, id: 2}, 
+                    {weekday: "Q", isClicked: false, id: 3},
+                    {weekday: "Q", isClicked: false, id: 4},
+                    {weekday: "S", isClicked: false, id: 5},
+                    {weekday: "S", isClicked: false, id: 6}]);   
+            })
+            request.catch(error => {
+                alert("Erro! Tente novamente :/");
+                setLoading (false);
+            })
+        }
     }
 }
 

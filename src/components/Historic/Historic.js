@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import Footer from '../Footer';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-
-
+import dayjs from 'dayjs';
+import { useState } from 'react'
 
 export default function Historic () {
+    const [date, setDate] = useState(new Date());
     return(
         <>
         <Header />
@@ -15,10 +16,14 @@ export default function Historic () {
                 Histórico
             </MyHabits>
         </HabitsDiv>
-        <CalendarDiv>
-            <Calendar className="calendar" locale="pt-br" calendarType="US" onClickDay={(value, event) => alert('Clicked', value)}/>
-        </CalendarDiv>
-        
+            <Calendar 
+                onChange={setDate}
+                value={date}
+                className="calendar" 
+                locale="pt-br" 
+                calendarType="US" 
+                onClickDay={(value, event) => alert('Clicked', value)}
+            />      
         <Footer />
         </>
     )
@@ -45,10 +50,3 @@ const MyHabits = styled.h2`
     font-size: 23px;
     color: #126BA5;
 `;
-
-const CalendarDiv = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 11px;
-`
