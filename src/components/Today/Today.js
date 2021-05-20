@@ -103,12 +103,14 @@ export default function Today (){
 }
 
 const HabitsDiv = styled.div`
+    margin: auto;
     margin-top: 100px;
-    padding: 0 20px;
+    width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 `;
+
 
 const MyHabits = styled.h2`
     font-family: 'Lexend Deca', sans-serif;
