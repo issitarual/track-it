@@ -9,3 +9,18 @@ body{
     margin-top: 15px;
     width: 90%;
 }
+
+.false{
+    background-color: #EA5766;
+    border-radius: 50%;
+}
+
+.true{
+    background-color: #8CC654;
+    border-radius: 50%;
+}
+
+.today{
+    background-color: #FCEE81;
+    color: black;
+}

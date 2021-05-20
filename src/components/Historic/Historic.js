@@ -4,17 +4,47 @@ import Footer from '../Footer';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import dayjs from 'dayjs';
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import UserContext from '../../contexts/UserContexts';
+import axios from 'axios';
+
 
 export default function Historic () {
     const [date, setDate] = useState(new Date());
+    const { user }= useContext(UserContext);
+    const [items, setItems] = useState([]);
+    const now = dayjs().format('DD/MM/YYYY');
+    const days = items.map((d, i) => d.day);
+    const habitos = items.map((h,i) => h.habits)
+    const done = habitos.map((d, i) => d.map((h,i)=> h.done))
+    const boolean = done.map((d,i) => d.reduce((acc, item) => acc && item, true));
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${user.token}`
+        }
+    }
+
+    useEffect(() => {
+		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily", config);
+
+		request.then(resposta => {
+			setItems(resposta.data);
+		});
+
+        request.catch(error => alert("Erro! Tente novamente :/"))
+	}, []);
+
+    const mark = items.map((d, i) => d.day)
+    console.log(mark);
+
+    console.log(items);
+    
+    console.log(now)
     return(
         <>
         <Header />
         <HabitsDiv>
-            <MyHabits>
-                Histórico
-            </MyHabits>
+            <h2>Histórico</h2>
         </HabitsDiv>
             <Calendar 
                 onChange={setDate}
@@ -22,7 +52,17 @@ export default function Historic () {
                 className="calendar" 
                 locale="pt-br" 
                 calendarType="US" 
-                onClickDay={(value, event) => alert('Clicked', value)}
+                onClickDay={(value, event) => alert(`Hábitos do dia: \n ${date}`)}
+                tileClassName={({ date, view }) => {
+                    if(days.find(x => x === dayjs(date).format('DD/MM/YYYY'))){       
+                        if(dayjs(date).format('DD/MM/YYYY') === now){
+                            return 'today';
+                        }
+                        else{
+                            return 'true';
+                        }
+                    }
+                }}
             />      
         <Footer />
         </>
@@ -44,10 +84,9 @@ const HabitsDiv = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
-
-const MyHabits = styled.h2`
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 23px;
-    color: #126BA5;
+    h2{
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 23px;
+        color: #126BA5;
+    }
 `;
