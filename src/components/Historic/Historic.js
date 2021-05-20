@@ -1,6 +1,9 @@
 import Header from '../Header';
 import styled from 'styled-components';
 import Footer from '../Footer';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+
 
 
 export default function Historic () {
@@ -12,7 +15,10 @@ export default function Historic () {
                 Histórico
             </MyHabits>
         </HabitsDiv>
-        <Text>Em breve você poderá ver o histórico dos seus hábitos aqui!</Text>
+        <CalendarDiv>
+            <Calendar className="calendar" locale="pt-br" calendarType="US" onClickDay={(value, event) => alert('Clicked', value)}/>
+        </CalendarDiv>
+        
         <Footer />
         </>
     )
@@ -39,3 +45,10 @@ const MyHabits = styled.h2`
     font-size: 23px;
     color: #126BA5;
 `;
+
+const CalendarDiv = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 11px;
+`
