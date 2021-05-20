@@ -6,6 +6,7 @@ import { CheckmarkOutline } from 'react-ionicons';
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import UserContext from '../../contexts/UserContexts';
+import ProgressContext from '../../contexts/ProgressContexts';
 
 
 
@@ -24,15 +25,23 @@ export default function Today (){
     const found = weekdayName.find( e => e.id === weekday);
     const [items, setItems] = useState([]);
     const { user }= useContext(UserContext);
-
+    const {progress, setProgress} = useContext(ProgressContext);
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${user.token}`
+        }
+    }
+    
+    let done = 0;
+    for(let i = 0; i < items.length; i++){
+        if(items[i].done === true){
+            done += 1;
+        }
+    }
+    setProgress(Math.round(done*100/items.length))
 
     console.log(items);
 	useEffect(() => {
-        const config = {
-	        headers: {
-		        "Authorization": `Bearer ${user.token}`
-	        }
-        }
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
 
 		request.then(resposta => {
@@ -50,15 +59,15 @@ export default function Today (){
                    {found.name}, {now}
                 </MyHabits>
             </HabitsDiv>
-            <Text value = {true}>{true? "Nenhum hábito concluído ainda": "x% dos hábitos concluídos"}</Text>
+            <Text value = {!items.find(i => i.done ===true)}>{!items.find(i => i.done ===true)? "Nenhum hábito concluído ainda": `${progress}% dos hábitos concluídos`}</Text>
             {items.map((t, i) => 
                 <Habits>
                     <Task>
                         <h1>{t.name}</h1>
-                        <p>Sequência atual: <span>{t.currentSequence} dias</span></p>
-                        <p>Seu recorde: <span>{t.highestSequence} dias</span></p>
+                        <p>Sequência atual: <Days state = {t.done}>{t.currentSequence} dias</Days></p>
+                        <p>Seu recorde: <Days state = {t.currentSequence === t.highestSequence}>{t.highestSequence} dias</Days></p>
                     </Task>
-                    <Checkmark state = {t.done}>
+                    <Checkmark state = {t.done} onClick={() => addOrRemoveHabits(t.done, t.id, t)}>
                         <CheckmarkOutline
                         color={'#fff'} 
                         height="60px"
@@ -72,6 +81,21 @@ export default function Today (){
             < Footer />
         </>
     )
+
+    function addOrRemoveHabits (done, id, item){
+        if(done === false){
+            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config);
+            request.then(resposta =>                             
+                setItems([...items.filter((i => i.id !== id)), {...item, done: true, currentSequence: item.currentSequence + 1}]))
+            request.catch(error => alert(error))
+        }
+        else{
+            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config);
+            request.then(resposta =>                             
+                setItems([{...item, done: false, currentSequence: item.currentSequence -1},...items.filter((i => i.id !== id))]))
+            request.catch(error => alert(error)) 
+        }
+    }
 }
 
 const HabitsDiv = styled.div`
@@ -106,7 +130,7 @@ const Habits = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-`
+`;
 
 const Checkmark = styled.div`
     width: 69px;
@@ -117,13 +141,13 @@ const Checkmark = styled.div`
     background-color: ${props => props.state? "#8FC549": "#EBEBEB"};
     border: 1px solid #E7E7E7;
     border-radius: 5px;
-`
+`;
 
 const Task = styled.div`
-        color: #666;
         font-family: 'Lexend Deca', sans-serif;
 
     h1{
+        color: #666;
         margin-bottom: 7px;
         font-size: 20px;
     }
@@ -131,8 +155,15 @@ const Task = styled.div`
         font-size: 13px;
         margin-bottom: 5px;
     }
+    p{
+        color: #666;
+    }
 `;
 
 const Div = styled.div`
     height: 110px;
+`;
+
+const Days = styled.span`
+        color: ${props => props.state? "#8FC549": "#666"};
 `
