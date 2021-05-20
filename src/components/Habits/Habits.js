@@ -8,7 +8,7 @@ import { TrashOutline } from 'react-ionicons';
 import Loader from "react-loader-spinner";
 
 export default function Habits (){
-    const { user }= useContext(UserContext);
+    const { user, setUser }= useContext(UserContext);
     const [day, setDay ]= useState([
         {weekday: "D", isClicked: false, id: 0}, 
         {weekday: "S", isClicked: false, id: 1},
@@ -24,6 +24,10 @@ export default function Habits (){
     const [loading, setLoading] = useState(false);
 
  
+    useEffect(() =>{
+        if(localStorage.getItem('user')){
+            setUser(JSON.parse(localStorage.getItem('user')))
+        }}, [])
 
 	useEffect(() => {
         const config = {

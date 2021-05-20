@@ -24,7 +24,7 @@ export default function Today (){
     ];
     const found = weekdayName.find( e => e.id === weekday);
     const [items, setItems] = useState([]);
-    const { user }= useContext(UserContext);
+    const { user, setUser }= useContext(UserContext);
     const {progress, setProgress} = useContext(ProgressContext);
     const config = {
         headers: {
@@ -40,7 +40,11 @@ export default function Today (){
     }
     setProgress(Math.round(done*100/items.length))
 
-    console.log(items);
+    useEffect(() =>{
+        if(localStorage.getItem('user')){
+            setUser(JSON.parse(localStorage.getItem('user')))
+        }}, [])
+        
 	useEffect(() => {
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
 

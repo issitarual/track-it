@@ -1,5 +1,5 @@
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserContext from '../contexts/UserContexts';
 import ProgressContext from '../contexts/ProgressContexts';
 import Home from './Home/Home';
@@ -12,8 +12,7 @@ import '../css/style.css';
 
 export default function App(){
     const [user, setUser] = useState("");
-    const [progress, setProgress] = useState(0)
-    console.log(user);
+    const [progress, setProgress] = useState(0);
 
     return (
         <UserContext.Provider value={{user, setUser}}>
