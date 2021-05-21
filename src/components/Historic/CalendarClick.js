@@ -10,7 +10,7 @@ export default function CalendarClick ({ state, setstate, information }){
                 <h2>Hábitos do dia {information[0]}</h2>
                 {information.length === 0? "" : information[1].map((n,i) => <HabitsCheck habitName = {n.name} done = {n.done}/>)}
                 <Close onClick={()=>setstate(!state)}>Fechar</Close>
-            </div>            
+            </div>
         </DayClick >
     )
 }
@@ -23,13 +23,12 @@ const DayClick = styled.div`
     height: 100%;
     background-color: red;
     display: ${props => props.state? "blocked" : "none"};
-    position: fixed;
     background-color: rgba(255,255,255,0.7);
     z-index: 0;
     div{
         width: 90%;
         margin: auto;
-        margin-top: 100px;
+        margin-top: 155px;
         padding: 13px 13px 17px 15px;
         background-color: #fff;
         border-radius: 5px;
@@ -40,7 +39,7 @@ const DayClick = styled.div`
         color: #126BA5;
         margin-bottom: 10px;
     }
-`
+`;
 
 const Close = styled.div`
     font-family: 'Lexend Deca', sans-serif;
@@ -48,6 +47,4 @@ const Close = styled.div`
     color: #52B6FF;
     text-align: center;
     margin-top: 10px!important;
-`
-
-
+`;
