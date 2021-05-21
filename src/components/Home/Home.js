@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import Loader from "react-loader-spinner";
-import Image from '../../images/logo.png';
+import Logo from '../Logo'
 import UserContext from '../../contexts/UserContexts';
 import axios from 'axios';
 
@@ -11,6 +11,11 @@ export default function Home (){
     const [password, setPassword] = useState ("");
     const [loading, setLoading] = useState(false);
     const { setUser }= useContext(UserContext);
+    const body = {
+        email,
+        password
+    }
+    let history = useHistory();
 
     useEffect(() =>{
         if(localStorage.getItem('user')){
@@ -18,41 +23,40 @@ export default function Home (){
             history.push("/hoje");
         }}, [])
 
-    let history = useHistory();
-    const body = {
-        email,
-        password
-    }
-    
     return (
         <>
-        <Logo>
-           <img src={Image}/> 
-        </Logo>
-        
-        <Data>
-            <input 
-                disabled = {loading} 
-                required 
-                type="email" 
-                placeholder="email" 
-                onChange={e => setEmail(e.target.value)}
-            />
-            <input 
-                disabled = {loading} 
-                required 
-                type="password" 
-                placeholder="senha" 
-                onChange={e => setPassword(e.target.value)}
-            />
-            <div disabled = {loading} onClick={() => login (setLoading, body, setUser)}>
-                    {loading === true? "": "Entrar"}
-                    <Loader visible ={loading} type="ThreeDots" color="#FFF" height={80} width={80} />
-            </div>
-        </Data>
-        <Link to="/cadastro">
-            <Register>Não tem uma conta? Cadastre-se!</Register>
-        </Link>
+            <Logo />
+            
+            <Data>
+                <input 
+                    disabled = {loading} 
+                    required 
+                    type="email" 
+                    placeholder="email" 
+                    onChange={e => setEmail(e.target.value)}
+                />
+                <input 
+                    disabled = {loading} 
+                    required 
+                    type="password" 
+                    placeholder="senha" 
+                    onChange={e => setPassword(e.target.value)}
+                />
+                <div disabled = {loading} onClick={() => login (setLoading, body, setUser)}>
+                        {loading === true? "": "Entrar"}
+                        <Loader 
+                            visible ={loading} 
+                            type="ThreeDots" 
+                            color="#FFF" 
+                            height={80} 
+                            width={80} 
+                        />
+                </div>
+            </Data>
+            
+            <Link to="/cadastro">
+                <Register>Não tem uma conta? Cadastre-se!</Register>
+            </Link>
         </>
     )
     
@@ -72,18 +76,6 @@ export default function Home (){
         })
     }
 }
-
-const Logo = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-    margin-top: 68px;
-
-    img{
-        width: 180px;
-        height: 180px;
-    }
-`;
 
 const Data = styled.div`
     display: flex;
