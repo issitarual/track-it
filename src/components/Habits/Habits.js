@@ -188,9 +188,8 @@ export default function Habits (){
 
                 const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
         
-                request.then(resposta => {
-                    setItems(resposta.data);
-                    console.log(items)
+                request.then(response => {
+                    setItems(response.data);
                 });
         
                 request.catch(error => alert("Erro! Tente novamente :/"))

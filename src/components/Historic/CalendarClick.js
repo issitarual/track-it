@@ -3,7 +3,6 @@ import HabitsCheck from './HabitsCheck';
 
 
 export default function CalendarClick ({ state, setstate, information }){
-    console.log(information)
     return(
         <DayClick state = {state}>
             <div>

@@ -35,12 +35,6 @@ export default function Historic () {
         request.catch(error => alert("Erro! Tente novamente :/"))
 	}, []);
 
-
-    console.log(mark);
-
-    console.log(items);
-    
-    console.log(now)
     return(
         <>
         <Header />
