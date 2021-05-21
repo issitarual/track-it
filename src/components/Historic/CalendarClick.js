@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import HabitsCheck from './HabitsCheck';
 
+
 export default function CalendarClick ({ state, setstate, information }){
     console.log(information)
     return(
@@ -9,8 +10,7 @@ export default function CalendarClick ({ state, setstate, information }){
                 <h2>Hábitos do dia {information[0]}</h2>
                 {information.length === 0? "" : information[1].map((n,i) => <HabitsCheck habitName = {n.name} done = {n.done}/>)}
                 <Close onClick={()=>setstate(!state)}>Fechar</Close>
-            </div>
-            
+            </div>            
         </DayClick >
     )
 }

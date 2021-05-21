@@ -13,17 +13,16 @@ export default function HabitsCheck ({habitName, done}){
             {done? 
             <CheckmarkOutline
                 color={'#00000'} 
-                height="250px"
-                width="250px"
+                height="25px"
+                width="25px"
             />:
             <CloseOutline
                 color={'#00000'} 
-                height="250px"
-                width="250px"
+                height="25px"
+                width="25px"
             />
             }
         </Check>
-        <Div/>
         </>
     )
 }
@@ -44,8 +43,6 @@ const Done = styled.div`
 `;
 
 const Check = styled.div`
-
+    margin-top: 0px!important;
 `
-const Div = styled.div`
-    height: 110px;
-`;
+
