@@ -120,7 +120,7 @@ export default function Habits (){
                             />
                         </span>
                         <Weekday>
-                            {day.map((d,i) => sameDay(h.days, d.id)? {...d, isClicked: true}: d).map((c,i)=><Day state = {c.isClicked} key = {i}>{c.weekday}</Day>)}
+                            {day.map((d,i) => sameDay(h.days, d.id)? {...d, isClicked: true}: d).map((c,i)=><HabitWeekday state = {c.isClicked} key = {i}>{c.weekday}</HabitWeekday>)}
                         </Weekday>
                     </OldHabits>
                 )}
@@ -190,6 +190,7 @@ export default function Habits (){
         
                 request.then(resposta => {
                     setItems(resposta.data);
+                    console.log(items)
                 });
         
                 request.catch(error => alert("Erro! Tente novamente :/"))
@@ -266,6 +267,21 @@ const Weekday = styled.div`
 `
 
 const Day = styled.div`
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #D5D5D5;
+    border-radius: 5px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 20px;
+    color: ${props => props.state? "#fff": "#DBDBDB"};
+    background-color: ${props => props.state? "#DBDBDB": "#fff"};
+`
+
+const HabitWeekday = styled.div`
     width: 30px;
     height: 30px;
     margin-right: 4px;
