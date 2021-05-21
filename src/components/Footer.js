@@ -12,25 +12,28 @@ export default function Footer () {
     return(
         <Bottom>
             <Link to="/habitos">
-                <Text>Hábitos</Text>
+                <p>Hábitos</p>
             </Link>
             <Link to="/hoje">
-                <Circle>             
-                    <CircularProgressbar value={progress} text="Hoje" 
-                    styles={buildStyles({
-                        textColor: "white",
-                        pathColor: "white",
-                        trailColor: "#52B6FF"})}/>
-                </Circle>
+                <div>             
+                    <CircularProgressbar 
+                        value={progress} 
+                        text="Hoje" 
+                        styles={buildStyles({
+                            textColor: "white",
+                            pathColor: "white",
+                            trailColor: "#52B6FF"
+                        })}/>
+                </div>
             </Link>
             <Link to="/historico">
-                <Text>Histórico</Text>
+                <p>Histórico</p>
             </Link>
         </Bottom>
     )
 }
 
-const Bottom = styled.div`
+const Bottom = styled.footer`
     position: fixed;
     bottom: 0;
     left: 0;
@@ -41,25 +44,26 @@ const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-`
+    p{
+        font-family: 'Lexend Deca', sans-serif;
+        color: #52B6FF;
+        font-size: 18px;
+    }
+    div{
+        width: 91px;
+        height: 91px;
+        margin-bottom: 50px;
+        border-radius: 50%;
+        background-color: #52B6FF;
+        font-family: 'Lexend Deca', sans-serif;
+        color: #fff;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+    }
+`;
 
-const Text = styled.p`
-    font-family: 'Lexend Deca', sans-serif;
-    color: #52B6FF;
-    font-size: 18px;
-`
 
-const Circle = styled.div`
-    width: 91px;
-    height: 91px;
-    margin-bottom: 50px;
-    border-radius: 50%;
-    background-color: #52B6FF;
-    font-family: 'Lexend Deca', sans-serif;
-    color: #fff;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-`
+
