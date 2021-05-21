@@ -8,8 +8,6 @@ import axios from 'axios';
 import UserContext from '../../contexts/UserContexts';
 import ProgressContext from '../../contexts/ProgressContexts';
 
-
-
 export default function Today (){
     const now = dayjs().format('DD/MM/YYYY');
     const weekday = dayjs().day();
@@ -31,14 +29,6 @@ export default function Today (){
             "Authorization": `Bearer ${user.token}`
         }
     }
-    
-    let done = 0;
-    for(let i = 0; i < items.length; i++){
-        if(items[i].done === true){
-            done += 1;
-        }
-    }
-    setProgress(Math.round(done*100/items.length))
 
     useEffect(() =>{
         if(localStorage.getItem('user')){
@@ -55,27 +45,52 @@ export default function Today (){
         request.catch(error => alert("Erro! Tente novamente :/"))
 	}, []);
 
+    //Barra de progresso
+    let done = 0;
+    for(let i = 0; i < items.length; i++){
+        if(items[i].done === true){
+            done += 1;
+        }
+    }
+    
+    setProgress(Math.round(done*100/items.length))
+    //Fim da barra de progresso
+
     return(
         <>
             <Header />
-            <HabitsDiv>
-                <MyHabits>
+
+            <Date>
+                <h2>
                    {found.name}, {now}
-                </MyHabits>
-            </HabitsDiv>
-            <Text value = {!items.find(i => i.done ===true)}>{!items.find(i => i.done ===true)? "Nenhum hábito concluído ainda": `${progress}% dos hábitos concluídos`}</Text>
+                </h2>
+            </Date>
+            <Text value = {!items.find(i => i.done ===true)}>
+                    {
+                        !items.find(i => i.done ===true)? 
+                        "Nenhum hábito concluído ainda": 
+                        `${progress}% dos hábitos concluídos`
+                    }
+            </Text>
             {items.map((t, i) => 
                 <Habits>
                     <Task>
                         <h1>{t.name}</h1>
-                        <p>Sequência atual: <Days state = {t.done}>{t.currentSequence} dias</Days></p>
-                        <p>Seu recorde: <Days state = {t.currentSequence === t.highestSequence}>{t.highestSequence} dias</Days></p>
+                        <p>Sequência atual: 
+                            <Days state = {t.done}>{t.currentSequence} dias</Days>
+                        </p>
+                        <p>Seu recorde: 
+                            <Days state = {t.currentSequence === t.highestSequence}>{t.highestSequence} dias</Days>
+                        </p>
                     </Task>
-                    <Checkmark state = {t.done} onClick={() => addOrRemoveHabits(t.done, t.id, t)}>
+                    <Checkmark 
+                        state = {t.done} 
+                        onClick={() => addOrRemoveHabits(t.done, t.id, t)}
+                    >
                         <CheckmarkOutline
-                        color={'#fff'} 
-                        height="60px"
-                        width="60px"
+                            color={'#fff'} 
+                            height="60px"
+                            width="60px"
                         />
                     </Checkmark>
                 </Habits>
@@ -89,33 +104,36 @@ export default function Today (){
     function addOrRemoveHabits (done, id, item){
         if(done === false){
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config);
+            
             request.then(resposta =>                             
                 setItems([...items.filter((i => i.id !== id)), {...item, done: true, currentSequence: item.currentSequence + 1}]))
+            
             request.catch(error => alert(error))
         }
         else{
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config);
+            
             request.then(resposta =>                             
                 setItems([{...item, done: false, currentSequence: item.currentSequence -1},...items.filter((i => i.id !== id))]))
+            
             request.catch(error => alert(error)) 
         }
     }
 }
 
-const HabitsDiv = styled.div`
+const Date = styled.div`
     margin: auto;
     margin-top: 100px;
     width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
 
-
-const MyHabits = styled.h2`
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 23px;
-    color: #126BA5;
+    h2{
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 23px;
+        color: #126BA5;
+    }
 `;
 
 const Text = styled.p`

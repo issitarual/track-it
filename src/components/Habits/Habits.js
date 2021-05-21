@@ -36,10 +36,10 @@ export default function Habits (){
     useEffect(() =>{
         if(localStorage.getItem('user')){
             setUser(JSON.parse(localStorage.getItem('user')))
-        }}, [])
+        }
+    }, [])
 
-	useEffect(() => {
- 
+	useEffect(() => { 
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
 
 		request.then(resposta => {
@@ -53,59 +53,70 @@ export default function Habits (){
     return(
         <>
             <Header />
-            <HabitsDiv>
-                <MyHabits>
+
+            <Habit>
+                <h2>
                     Meus hábitos
-                </MyHabits>
-                <AddHabits onClick={() => setAddHabits(true)}>
+                </h2>
+                <div onClick={() => setAddHabits(true)}>
                     +
-                </AddHabits>
-            </HabitsDiv>
+                </div>
+            </Habit>
+
             <NewHabit display = {addHabits}>
-                <HabitName disabled = {loading} type="text" placeholder="nome do hábito" value = {habitName} onChange={e => setHabitName(e.target.value)}></HabitName>
+                <input 
+                    disabled = {loading} 
+                    type="text" 
+                    required
+                    placeholder="nome do hábito" 
+                    value = {habitName} 
+                    onChange={e => setHabitName(e.target.value)}
+                />
                 <Weekday>
-                    {day.map((d,i) => <Day disabled = {loading} state = {d.isClicked} onClick={() => clickDay(d)} key = {i}>{d.weekday}</Day>)}
+                    {day.map((d,i) => 
+                        <Day 
+                            disabled = {loading} 
+                            state = {d.isClicked} 
+                            onClick={() => clickDay(d)} 
+                            key = {i}
+                        >
+                            {d.weekday}
+                        </Day>)}
                 </Weekday>
                 <Buttons>
-                    <Cancel disabled = {loading} onClick={() => setAddHabits(false)}>Cancelar</Cancel>
-                    <Save disabled = {loading} onClick={() => 
+                    <p 
+                        disabled = {loading} 
+                        onClick={() => setAddHabits(false)}
+                    >
+                        Cancelar
+                    </p>
+                    <div disabled = {loading} onClick={() => 
                         {!day.find((d,i) => d.isClicked)? 
                         alert("Selecione pelo menos um dia da semana"): 
                         sendHabit(day, setLoading, setHabitName, setItems, setAddHabits, setDay, config, body, items)
-                    }}>{loading === true? "": "Salvar"}
-                        <Loader visible ={loading} type="ThreeDots" color="#FFF" height={10} width={40} />
-                    </Save>
+                    }}>
+                        {loading === true? "": "Salvar"}
+                        <Loader 
+                            visible ={loading} 
+                            type="ThreeDots" 
+                            color="#FFF" 
+                            height={10} 
+                            width={40} 
+                        />
+                    </div>
                 </Buttons>
             </NewHabit>
-            <Text>{items.length === 0? "Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!": ""}</Text>
+
+            <Text>
+                {items.length === 0? "Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!": ""}
+            </Text>
             
                 {items.map((h,i)=>
                     <OldHabits display = {items.length === 0? false: true}>
                         <span>
                             <p>{h.name}</p>
-                            <TrashOutline onClick={() => {
-                            let resultado = window.confirm("Você gostaria de apagar esse hábito?");
-                            if(resultado){
-                                axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${h.id}`, {
-                                    headers: {
-                                        "Authorization": `Bearer ${user.token}`
-                                    },
-                                  });
-
-                                    const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
-                            
-                                    request.then(resposta => {
-                                        setItems(resposta.data);
-                                    });
-                            
-                                    request.catch(error => alert("Erro! Tente novamente :/"))
-                                ;
-                                }
-                            else{
-                                alert("cancelar")
-                            }
-                            }
-                            }
+                            <TrashOutline 
+                                onClick={() => deleteHabit(h.id, user.token, config, setItems)}
                             />
                         </span>
                         <Weekday>
@@ -158,40 +169,60 @@ export default function Habits (){
                     {weekday: "S", isClicked: false, id: 5},
                     {weekday: "S", isClicked: false, id: 6}]);   
             })
+
             request.catch(error => {
                 alert("Erro! Tente novamente :/");
                 setLoading (false);
             })
         }
     }
+
+    function deleteHabit (id,token, config, setItems) {
+        let resultado = window.confirm("Você gostaria de apagar esse hábito?");
+        if(resultado){
+            axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+              });
+
+                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+        
+                request.then(resposta => {
+                    setItems(resposta.data);
+                });
+        
+                request.catch(error => alert("Erro! Tente novamente :/"))
+            ;
+            }
+    }
 }
 
-const HabitsDiv = styled.div`
+const Habit = styled.div`
     margin: auto;
     margin-top: 100px;
     width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
 
-const MyHabits = styled.h2`
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 23px;
-    color: #126BA5;
-`;
-
-const AddHabits = styled.div`
-    width: 40px;
-    height: 35px;
-    background-color: #52B6FF;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 27px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    h2{
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 23px;
+        color: #126BA5;
+    }
+    div{
+        width: 40px;
+        height: 35px;
+        background-color: #52B6FF;
+        border-radius: 5px;
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 27px;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 `;
 
 const Text = styled.p`
@@ -211,22 +242,23 @@ const NewHabit = styled.div`
     display: ${props => props.display === true? "flex": "none"};
     flex-direction: column;
     align-items: center;
-`
 
-const HabitName = styled.input`
-    width: 90%;
-    height: 45px;
-    margin-top: 18px;
-    border: 1px solid #D5D5D5;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 20px;
-    color: #AFAFAF;
-    ::-webkit-input-placeholder  { 
-        color: #DBDBDB; 
-        padding: 11px;
+    input{
+        width: 90%;
+        height: 45px;
+        margin-top: 18px;
+        border: 1px solid #D5D5D5;
+        border-radius: 5px;
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 20px;
+        color: #AFAFAF;
+            ::-webkit-input-placeholder  { 
+                color: #DBDBDB; 
+                padding: 11px;
+            }
     }
 `
+
 const Weekday = styled.div`
     display: flex;
     width: 90%;
@@ -254,28 +286,28 @@ const Buttons = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-`
 
-const Cancel = styled.p`
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 16px;
-    color: #52B6FF;
-`
+    p{
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 16px;
+        color: #52B6FF;
+    }
 
-const Save = styled.div`
-    height: 35px;
-    width: 85px;
-    padding: 8px 18px;
-    margin-left: 23px;
-    background-color: #52B6FF;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 16px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
+    div{
+        height: 35px;
+        width: 85px;
+        padding: 8px 18px;
+        margin-left: 23px;
+        background-color: #52B6FF;
+        border-radius: 5px;
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 16px;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
 
 const OldHabits = styled.div`
     width: 90%;
