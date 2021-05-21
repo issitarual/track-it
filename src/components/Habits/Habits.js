@@ -32,7 +32,6 @@ export default function Habits (){
         days: day.filter((d,i) => d.isClicked === true).map((d,i) => d.id)
     }
 
- 
     useEffect(() =>{
         if(localStorage.getItem('user')){
             setUser(JSON.parse(localStorage.getItem('user')))
@@ -177,24 +176,30 @@ export default function Habits (){
         }
     }
 
-    function deleteHabit (id,token, config, setItems) {
+    function deleteHabit (id, token, config, setItems) {
         let resultado = window.confirm("Você gostaria de apagar esse hábito?");
         if(resultado){
-            axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, {
+            const deleteAPI = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
               });
 
-                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
-        
-                request.then(response => {
-                    setItems(response.data);
-                });
-        
-                request.catch(error => alert("Erro! Tente novamente :/"))
-            ;
+              deleteAPI.then(response => deleteSuccess (setItems));
+
+              deleteAPI.catch(error => alert("Erro! Tente novamente :/"));
             }
+    }
+
+    function deleteSuccess (setItems){
+        const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+        
+        request.then(response => {
+            setItems(response.data);
+        });
+
+        request.catch(error => alert("Erro! Tente novamente :/"))
+    ;
     }
 }
 
