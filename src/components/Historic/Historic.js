@@ -54,12 +54,21 @@ export default function Historic () {
                 calendarType="US" 
                 onClickDay={(value, event) => alert(`Hábitos do dia: \n ${date}`)}
                 tileClassName={({ date, view }) => {
+                    let habit = [];
+                    let doneHabit = [];
                     if(days.find(x => x === dayjs(date).format('DD/MM/YYYY'))){       
                         if(dayjs(date).format('DD/MM/YYYY') === now){
                             return 'today';
                         }
                         else{
-                            return 'true';
+                            for(let i = 0; i < items.length; i++){
+                                if(items[i].day === dayjs(date).format('DD/MM/YYYY'))
+                                habit = items[i].habits;
+                                for (let j = 0; j < habit.length; j++){
+                                    doneHabit.push(habit[i].done)                                    
+                                }  
+                            }
+                            return `${doneHabit.reduce((acc, item) => acc && item, true)}`
                         }
                     }
                 }}
