@@ -120,7 +120,7 @@ export default function Habits (){
                             />
                         </span>
                         <Weekday>
-                            {day.map((d,i) => sameDay(h.days, d.id)? {...d, isClicked: true}: d).map((c,i)=><HabitWeekday state = {c.isClicked} key = {i}>{c.weekday}</HabitWeekday>)}
+                            {day.map((d,i) => sameDay(h.days, d.id)? {...d, isChoose: true}: d).map((c,i)=><Day state = {c.isChoose} key = {i}>{c.weekday}</Day>)}
                         </Weekday>
                     </OldHabits>
                 )}
@@ -258,13 +258,13 @@ const NewHabit = styled.div`
                 padding: 11px;
             }
     }
-`
+`;
 
 const Weekday = styled.div`
     display: flex;
     width: 90%;
     margin-top: 8px;
-`
+`;
 
 const Day = styled.div`
     width: 30px;
@@ -279,22 +279,7 @@ const Day = styled.div`
     font-size: 20px;
     color: ${props => props.state? "#fff": "#DBDBDB"};
     background-color: ${props => props.state? "#DBDBDB": "#fff"};
-`
-
-const HabitWeekday = styled.div`
-    width: 30px;
-    height: 30px;
-    margin-right: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #D5D5D5;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 20px;
-    color: ${props => props.state? "#fff": "#DBDBDB"};
-    background-color: ${props => props.state? "#DBDBDB": "#fff"};
-`
+`;
 
 const Buttons = styled.div`
     width: 90%;
@@ -345,8 +330,8 @@ const OldHabits = styled.div`
         justify-content: space-between;
         margin-bottom: 8px;
     }
-`
+`;
 
 const Div = styled.div`
     height: 110px;
-`
+`;
