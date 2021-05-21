@@ -25,6 +25,7 @@ const Div = styled.div`
     padding: 18px;
     background-color: #126BA5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+    z-index: 2;
 `;
 
 const Title = styled.p`

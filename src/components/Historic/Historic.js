@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { useState, useEffect, useContext } from 'react'
 import UserContext from '../../contexts/UserContexts';
 import axios from 'axios';
+import CalendarClick from './CalendarClick';
 
 
 export default function Historic () {
@@ -15,9 +16,9 @@ export default function Historic () {
     const [items, setItems] = useState([]);
     const now = dayjs().format('DD/MM/YYYY');
     const days = items.map((d, i) => d.day);
-    const habitos = items.map((h,i) => h.habits)
-    const done = habitos.map((d, i) => d.map((h,i)=> h.done))
-    const boolean = done.map((d,i) => d.reduce((acc, item) => acc && item, true));
+    const [state, setstate] = useState(false);
+    const [information, setInformation] = useState("");
+
     const config = {
         headers: {
             "Authorization": `Bearer ${user.token}`
@@ -52,7 +53,17 @@ export default function Historic () {
                 className="calendar" 
                 locale="pt-br" 
                 calendarType="US" 
-                onClickDay={(value, event) => alert(`Hábitos do dia: \n ${date}`)}
+                onClickDay={(value, event) => {
+                    if(days.find(x => x === dayjs(value).format('DD/MM/YYYY'))){
+                    setstate(true)
+                    let chosen = [];
+                    chosen = items.find((item,i) => item.day === dayjs(value).format('DD/MM/YYYY'))
+                    let habitChosen = [];
+                    for(let i = 0; i < chosen.habits.length; i++){
+                        chosen.habits[i].done? habitChosen += `-${chosen.habits[i].name}: Feito! \n`: habitChosen +=`- ${chosen.habits[i].name}: Faltou :(\n`
+                    }
+                    setInformation([dayjs(value).format('DD/MM/YYYY'), habitChosen])}
+                }}
                 tileClassName={({ date, view }) => {
                     let habit = [];
                     let doneHabit = [];
@@ -73,9 +84,15 @@ export default function Historic () {
                     }
                 }}
             />      
+            <CalendarClick state = {state} setstate = {setstate} information = {information}/> 
         <Footer />
         </>
     )
+    function clickWeekday (array){
+        for(let i = 0; i < array.length; i++){
+            console.log(array[i].done)
+        }
+    }
 }
 
 const Text = styled.p`
