@@ -25,7 +25,7 @@ export default function Historic() {
 
   useEffect(() => {
     const request = axios.get(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily",
+        `${process.env.REACT_APP_API_BASE_URL}/habits/history/daily`,
       config
     );
 

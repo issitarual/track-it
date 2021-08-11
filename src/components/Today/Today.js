@@ -38,7 +38,7 @@ export default function Today() {
 
   useEffect(() => {
     const request = axios.get(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
+      `${process.env.REACT_APP_API_BASE_URL}/habits/today`,
       config
     );
 
@@ -106,7 +106,7 @@ export default function Today() {
   function addOrRemoveHabits(done, id, item) {
     if (done === false) {
       const request = axios.post(
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`,
+        `${process.env.REACT_APP_API_BASE_URL}/habits/${id}/check`,
         {},
         config
       );
@@ -121,7 +121,7 @@ export default function Today() {
       request.catch((error) => alert(error));
     } else {
       const request = axios.post(
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`,
+        `${process.env.REACT_APP_API_BASE_URL}/habits/${id}/uncheck`,
         {},
         config
       );

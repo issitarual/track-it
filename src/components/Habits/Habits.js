@@ -40,7 +40,7 @@ export default function Habits() {
 
   useEffect(() => {
     const request = axios.get(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        `${process.env.REACT_APP_API_BASE_URL}/habits`,
       config
     );
 
@@ -180,7 +180,7 @@ export default function Habits() {
       setLoading(true);
 
       const request = axios.post(
-        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        `${process.env.REACT_APP_API_BASE_URL}/habits`,
         body,
         config
       );
@@ -212,7 +212,7 @@ export default function Habits() {
     let resultado = window.confirm("Você gostaria de apagar esse hábito?");
     if (resultado) {
       const deleteAPI = axios.delete(
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/habits/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -228,7 +228,7 @@ export default function Habits() {
 
   function deleteSuccess(setItems) {
     const request = axios.get(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        `${process.env.REACT_APP_API_BASE_URL}/habits`,
       config
     );
 
